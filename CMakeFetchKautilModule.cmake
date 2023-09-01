@@ -5,8 +5,6 @@
 # this can be used want to update entire repos or erase binaries unexpectedly 
 set(CMakeFetchKautilModule.force FALSE) 
 
-set(CMakeFetchKautilModule.pull FALSE) 
-
 macro(CMakeFetchKautilModule prfx)
     
     set(CMakeFetchKautilModule_evacu_m ${m})
@@ -27,16 +25,11 @@ macro(CMakeFetchKautilModule prfx)
     set(${m}_cmake_install ${${prfx}_CMAKE_INSTALL_OPTION})
     
     list(APPEND ${m}_unsetter  ${m}_force_option ${m}_verbose_option ${m}_dest)
-    if(${${prfx}_FORCE_UPDATE} OR (DEFINED CMakeFetchKautilModule.force AND ${CMakeFetchKautilModule.force})) 
+    if(${${prfx}_FORCE_UPDATE} 
+            OR (DEFINED CMakeFetchKautilModule.force AND ${CMakeFetchKautilModule.force})) 
         set(${m}_force_option FORCE_UPDATE )
     endif()
     
-    if(DEFINED CMakeFetchKautilModule.pull AND ${CMakeFetchKautilModule.pull})
-        set(${m}_is_pull TRUE)
-    else()
-        set(${m}_is_pull FALSE)
-    endif()
-        
     
     if(${${prfx}_VERBOSE})
         set(${m}_verbose_option VERBOSE )
@@ -93,11 +86,9 @@ macro(CMakeFetchKautilModule prfx)
     
     if((NOT ${${m}_force_option} STREQUAL "") 
             OR (NOT DEFINED CACHE{${__build_cache_var}})
-            OR (NOT DEFINED CACHE{${__build_cache_var}})
-            OR ${${m}_is_pull})
+            OR (NOT DEFINED CACHE{${__build_cache_var}}))
         
         if(EXISTS ${${prfx}}/CMakeLists.txt)
-            
             
             list(APPEND unsetter ${m}_build_root ${m}_0)
             get_filename_component(${m}_0 "${${prfx}}" NAME)
@@ -107,6 +98,7 @@ macro(CMakeFetchKautilModule prfx)
             file(MAKE_DIRECTORY ${${m}_build_root}) 
             
             CMakeExecuteCommand(execgit ASSERT ${${m}_verbose_option} DIR ${${prfx}} COMMAND cmake -S . -B "${${m}_build_root}" -DKAUTIL_THIRD_PARTY_DIR='${KAUTIL_THIRD_PARTY_DIR}' ${${m}_cmake_configure})
+            
             if(DEFINED ${m}_cmake_build)
                 CMakeExecuteCommand(execgit ASSERT ${${m}_verbose_option} DIR "${${m}_build_root}" COMMAND cmake --build . ${${m}_cmake_build}) 
             else()

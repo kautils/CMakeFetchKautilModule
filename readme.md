@@ -1,17 +1,20 @@
 ### CMakeFetchKautilModule
 * clone repository and build it. this is not comprehensive yet.
 * althogh it is assumed module which is in Kautils, it can also be applied to other modules to a certain extent.
+### note 
 * the way to clone is currently fixed at 'init', 'fetch ... depth=1', then 'checkout' .  
+* the default location is ${CMAKE_BINARY_DIR}/CMakeFetchKautilModule} 
+* if you update all the module that CMakeFetchKautilModule can see in a configuration, use set(CMakeFetchKautilModule.force FALSE)  
+    * CMakeFetchKautilModule will erase tree that it is managing (cloned by this module).  
+    * then refetch repos of same id.
+    * then build but if build tree remains, reuse that remain.
+### example
 ```cmake
-
-
 # force to refetch all the repo within this configure.
 # this can be used when want to update entire repos or when repair unexpectedly erased binaries. 
 set(CMakeFetchKautilModule.force FALSE) 
 
-
 # used as working directory. as default, clone ,build,install into here.     
-# the default location is ${CMAKE_BINARY_DIR}/CMakeFetchKautilModule} 
 set(__dest ${CMAKE_BINARY_DIR}/dest)
 
 # the number of thread 
