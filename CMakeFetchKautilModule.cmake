@@ -60,7 +60,6 @@ macro(CMakeFetchKautilModule prfx)
             ${${m}_verbose_option}
             )
     
-    set(m CMakeFetchKautilModule)
     list(APPEND ${m}_unsetter __build_cache_var)
     set(__build_cache_var ${${prfx}}/${${m}_branch}${${m}_tag}${${m}_hash})
     if("${${m}_force_option}" STREQUAL "")
