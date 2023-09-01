@@ -48,11 +48,11 @@ macro(CMakeFetchKautilModule prfx)
     
     
     
-    if(NOT EXISTS ${${m}_dest}/cmake/CMakeGitCloneMinimal.cmake)
-        file(DOWNLOAD https://raw.githubusercontent.com/kautils/CMakeGitCloneMinimal/v0.0.1/CMakeGitCloneMinimal.cmake "${${m}_dest}/cmake/CMakeGitCloneMinimal.cmake")
+    if(NOT EXISTS ${${m}_dest}/kautil_cmake/CMakeGitCloneMinimal.cmake)
+        file(DOWNLOAD https://raw.githubusercontent.com/kautils/CMakeGitCloneMinimal/v0.0.1/CMakeGitCloneMinimal.cmake "${${m}_dest}/kautil_cmake/CMakeGitCloneMinimal.cmake")
     endif()
     
-    include("${${m}_dest}/cmake/CMakeGitCloneMinimal.cmake")
+    include("${${m}_dest}/kautil_cmake/CMakeGitCloneMinimal.cmake")
     CMakeGitCloneMinimal( ${prfx} 
             REPOSITORY_REMOTE ${${m}_remote}  
             REPOSITORY_URI ${${m}_uri}
