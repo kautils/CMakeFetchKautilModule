@@ -1,7 +1,9 @@
 
 macro(CMakeFetchKautilModule prfx)
     
+    set(CMakeFetchKautilModule_evacu_m ${m})
     set(m CMakeFetchKautilModule)
+    
     cmake_parse_arguments(${prfx} "VERBOSE;FORCE_UPDATE" "GIT;REMOTE;BRANCH;TAG;HASH;DESTINATION" "CMAKE_CONFIGURE_OPTION;CMAKE_BUILD_OPTION;CMAKE_INSTALL_OPTION" ${ARGV})
     list(APPEND ${m}_unsetter_prfx ${prfx}_DESTINATION ${prfx}_FORCE_UPDATE ${prfx}_GIT ${prfx}_REMOTE ${prfx}_TAG ${prfx}_CMAKE_CONFIGURE_OPTION ${prfx}_CMAKE_BUILD_OPTION ${prfx}_CMAKE_INSTALL_OPTION)
     list(APPEND ${m}_unsetter ${m}_uri ${m}_remote ${m}_tag)
@@ -100,4 +102,7 @@ macro(CMakeFetchKautilModule prfx)
     foreach(__var ${${m}_unsetter_prfx})
         unset(${__var})
     endforeach()
+    
+    
+    set(m ${CMakeFetchKautilModule_evacu_m})
 endmacro()
