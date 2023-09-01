@@ -48,9 +48,16 @@ macro(CMakeFetchKautilModule prfx)
     
     
     
-    if(NOT EXISTS ${${m}_dest}/kautil_cmake/CMakeGitCloneMinimal.cmake)
-        file(DOWNLOAD https://raw.githubusercontent.com/kautils/CMakeGitCloneMinimal/v0.0.1/CMakeGitCloneMinimal.cmake "${${m}_dest}/kautil_cmake/CMakeGitCloneMinimal.cmake")
+    list(APPEND ${m}_unsetter ${m}_kautil_cmake_module_dir)
+    if(NOT DEFINED KAUTIL_THIRD_PARTY_DIR)
+        set(${m}_kautil_cmake_module_dir "${CMAKE_CURRENT_BINARY_DIR}/kautil_cmake")
+    else()
+        set(${m}_kautil_cmake_module_dir "${KAUTIL_THIRD_PARTY_DIR}/kautil_cmake")
     endif()
+    if(NOT EXISTS "${${m}_kautil_cmake_module_dir}/CMakeGitCloneMinimal.cmake")
+        file(DOWNLOAD https://raw.githubusercontent.com/kautils/CMakeGitCloneMinimal/v0.0.1/CMakeGitCloneMinimal.cmake "${${m}_kautil_cmake_module_dir}/CMakeGitCloneMinimal.cmake")
+    endif()
+    
     
     include("${${m}_dest}/kautil_cmake/CMakeGitCloneMinimal.cmake")
     CMakeGitCloneMinimal( ${prfx} 
