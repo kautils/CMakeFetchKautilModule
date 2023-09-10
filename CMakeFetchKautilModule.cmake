@@ -119,13 +119,20 @@ macro(CMakeFetchKautilModule prfx)
             set(${m}_build_root ${${m}_dest}.build/${${m}_1}/${${m}_0}/${__build_id}) # as build cache
             file(MAKE_DIRECTORY ${${m}_build_root}) 
             
-            CMakeExecuteCommand(execgit ASSERT ${${m}_verbose_option} DIR ${${prfx}} COMMAND cmake -S . -B "${${m}_build_root}" -DKAUTIL_THIRD_PARTY_DIR='${KAUTIL_THIRD_PARTY_DIR}' -G "${CMAKE_GENERATOR}"
+            
+            list(APPEND unsetter __str_work_dir __str_build_dir __str_generator) 
+            # for white space
+            string(APPEND __str_work_dir "${${prfx}}")
+            string(APPEND __str_build_dir "${${m}_build_root}")
+            string(APPEND __str_generator "${CMAKE_GENERATOR}")
+            
+            CMakeExecuteCommand(execgit ASSERT ${${m}_verbose_option} DIR "${__str_work_dir}" COMMAND cmake -S . -B "${__str_build_dir}" -G "${__str_generator}"
+                    -DKAUTIL_THIRD_PARTY_DIR='${KAUTIL_THIRD_PARTY_DIR}'
                     -DCMAKE_CXX_COMPILER='${CMAKE_CXX_COMPILER}'
                     -DCMAKE_C_COMPILER='${CMAKE_C_COMPILER}'
                     -DCMAKE_CXX_COMPILER_LAUNCHER='${CMAKE_CXX_COMPILER_LAUNCHER}'
                     -DCMAKE_CXX_COMPILER_RANLIB='${CMAKE_CXX_COMPILER_RANLIB}'
                     )
-            
             if(DEFINED ${m}_cmake_build)
                 CMakeExecuteCommand(execgit ASSERT ${${m}_verbose_option} DIR "${${m}_build_root}" COMMAND cmake --build . '${${m}_cmake_build}') 
             else()
