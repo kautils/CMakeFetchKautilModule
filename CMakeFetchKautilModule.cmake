@@ -120,11 +120,12 @@ macro(CMakeFetchKautilModule prfx)
             file(MAKE_DIRECTORY ${${m}_build_root}) 
             
             
-            list(APPEND unsetter __str_work_dir __str_build_dir __str_generator) 
+            list(APPEND ${${m}_unsetter} __str_work_dir __str_build_dir __str_generator) 
             # for white space
             string(APPEND __str_work_dir "${${prfx}}")
             string(APPEND __str_build_dir "${${m}_build_root}")
             string(APPEND __str_generator "${CMAKE_GENERATOR}")
+            
             
             CMakeExecuteCommand(execgit ASSERT ${${m}_verbose_option} DIR "${__str_work_dir}" COMMAND cmake -S . -B "${__str_build_dir}" -G "${__str_generator}"
                     -DKAUTIL_THIRD_PARTY_DIR='${KAUTIL_THIRD_PARTY_DIR}'
