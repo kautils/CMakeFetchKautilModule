@@ -10,7 +10,7 @@ macro(CMakeFetchKautilModule prfx)
     set(CMakeFetchKautilModule_evacu_m ${m})
     set(m CMakeFetchKautilModule)
     
-    cmake_parse_arguments(${prfx} "VERBOSE;FORCE_UPDATE" "GIT;REMOTE;BRANCH;TAG;HASH;DESTINATION" "CMAKE_CONFIGURE_OPTION;CMAKE_BUILD_OPTION;CMAKE_INSTALL_OPTION" ${ARGV})
+    cmake_parse_arguments(${prfx} "VERBOSE;FORCE_UPDATE;FORCE_BUILD" "GIT;REMOTE;BRANCH;TAG;HASH;DESTINATION" "CMAKE_CONFIGURE_OPTION;CMAKE_BUILD_OPTION;CMAKE_INSTALL_OPTION" ${ARGV})
     list(APPEND ${m}_unsetter_prfx ${prfx}_DESTINATION ${prfx}_FORCE_UPDATE ${prfx}_GIT ${prfx}_REMOTE ${prfx}_TAG ${prfx}_CMAKE_CONFIGURE_OPTION ${prfx}_CMAKE_BUILD_OPTION ${prfx}_CMAKE_INSTALL_OPTION)
     list(APPEND ${m}_unsetter ${m}_uri ${m}_remote ${m}_tag)
     set(${m}_uri ${${prfx}_GIT})
@@ -24,11 +24,13 @@ macro(CMakeFetchKautilModule prfx)
     set(${m}_cmake_build ${${prfx}_CMAKE_BUILD_OPTION})
     set(${m}_cmake_install ${${prfx}_CMAKE_INSTALL_OPTION})
     
-    list(APPEND ${m}_unsetter  ${m}_force_option ${m}_verbose_option ${m}_dest)
+    list(APPEND ${m}_unsetter  ${m}_force_option ${m}_verbose_option ${m}_dest ${m}_force_build)
     if(${${prfx}_FORCE_UPDATE} 
             OR (DEFINED CMakeFetchKautilModule.force AND ${CMakeFetchKautilModule.force})) 
         set(${m}_force_option FORCE_UPDATE )
     endif()
+    
+    set(${m}_force_build ${${prfx}_FORCE_BUILD})
     
     
     if(${${prfx}_VERBOSE})
@@ -90,7 +92,8 @@ macro(CMakeFetchKautilModule prfx)
         endif()
     endif()
     
-    if((NOT ${${m}_force_option} STREQUAL "") 
+    if(${${m}_force_build}
+            OR (NOT ${${m}_force_option} STREQUAL "") 
             OR (NOT DEFINED CACHE{${__build_cache_var}})
             OR (NOT DEFINED CACHE{${__build_cache_var}}))
         
@@ -115,7 +118,6 @@ macro(CMakeFetchKautilModule prfx)
             
             set(${m}_build_root ${${m}_dest}.build/${${m}_1}/${${m}_0}/${__build_id}) # as build cache
             file(MAKE_DIRECTORY ${${m}_build_root}) 
-            
             
             CMakeExecuteCommand(execgit ASSERT ${${m}_verbose_option} DIR ${${prfx}} COMMAND cmake -S . -B "${${m}_build_root}" -DKAUTIL_THIRD_PARTY_DIR='${KAUTIL_THIRD_PARTY_DIR}' -G "${CMAKE_GENERATOR}"
                     -DCMAKE_CXX_COMPILER='${CMAKE_CXX_COMPILER}'
