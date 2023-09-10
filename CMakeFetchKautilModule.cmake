@@ -97,11 +97,23 @@ macro(CMakeFetchKautilModule prfx)
         if(EXISTS ${${prfx}}/CMakeLists.txt)
             
             
-            list(APPEND unsetter ${m}_build_root ${m}_0)
+            
+            list(APPEND unsetter ${m}_build_root ${m}_0 __build_id __compiler_hash __mingw_id)
             get_filename_component(${m}_0 "${${prfx}}" NAME)
             get_filename_component(${m}_1 "${${prfx}}" DIRECTORY)
             get_filename_component(${m}_1 "${${m}_1}" NAME)
-            set(${m}_build_root ${${m}_dest}.build/${${m}_1}/${${m}_0}) # as build cache
+            
+            
+            if(${MINGW} EQUAL 1)
+                set(__mingw_id -mingw)
+            endif()
+            string(SHA3_256 __compiler_hash ${CMAKE_CXX_COMPILER}${CMAKE_CXX_COMPILER_RANLIB}${CMAKE_CXX_COMPILER_LAUNCHER})
+            string(SUBSTRING ${__compiler_hash} 0 7 __compiler_hash)
+            string(APPEND __build_id ${CMAKE_CXX_COMPILER_ID}${__mingw_id}-${CMAKE_GENERATOR}-${__compiler_hash})
+            string(TOLOWER ${__build_id} __build_id)
+            
+            
+            set(${m}_build_root ${${m}_dest}.build/${${m}_1}/${${m}_0}/${__build_id}) # as build cache
             file(MAKE_DIRECTORY ${${m}_build_root}) 
             
             
