@@ -26,7 +26,8 @@ CMakeFetchKautilModule(c11_string_allocator
         GIT https://github.com/kautils/c11_string_allocator.git 
         REMOTE origin 
         TAG v0.0.1
-        CMAKE_CONFIGURE_OPTION -DSOME="SOME" # -S and -B is automatically filled. it is possilbe to specify other options from here.
+        #CMAKE_CONFIGURE  # cmake -S [auto] -B [auto] [CMAKE_CONFIGURE] [CMAKE_CONFIGURE_MACRO]  
+        CMAKE_CONFIGURE_MACRO -DSOME="SOME" # -S and -B -G ${CMAKE_GENERATOR} is automatically filled. it is possilbe to specify other options from here.
         CMAKE_BUILD_OPTION -j ${number_thread}
         CMAKE_INSTALL_OPTION --prefix ${CMAKE_BINARY_DIR}/test
         DESTINATION "${__dest}"
