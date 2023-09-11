@@ -8,6 +8,9 @@
     * CMakeFetchKautilModule will erase tree that it is managing (cloned by this module).  
     * then refetch repos of same id.
     * then build but if build tree remains, reuse that remain.
+
+* argument1.CLONE_PREFIX : last cloned dir
+* argument1.INSTALL_PREFIX : last installed dir
 ### example
 ```cmake
 # force to refetch all the repo within this configure.
