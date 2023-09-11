@@ -150,6 +150,10 @@ macro(CMakeFetchKautilModule prfx)
             file(GLOB mod_paths ${${m}_dest}/lib/cmake/*)
             list(APPEND CMAKE_PREFIX_PATH ${mod_paths})
             list(REMOVE_DUPLICATES  CMAKE_PREFIX_PATH)
+            
+            set(${prfx}.CLONE_PREFIX "${${prfx}}" CACHE FORCE STRING "last cloned dir")
+            set(${prfx}.INSTALL_PREFIX "${${m}_dest}" CACHE FORCE STRING "last installed dir")
+            
         endif()
     endif()
 
