@@ -11,6 +11,7 @@
 
 * argument1.CLONE_PREFIX : last cloned dir
 * argument1.INSTALL_PREFIX : last installed dir
+
 ### example
 ```cmake
 # force to refetch all the repo within this configure.
@@ -28,10 +29,12 @@ CMakeFetchKautilModule(c11_string_allocator
         TAG v0.0.1
         #CMAKE_CONFIGURE  # cmake -S [auto] -B [auto] [CMAKE_CONFIGURE] [CMAKE_CONFIGURE_MACRO]  
         CMAKE_CONFIGURE_MACRO -DSOME="SOME" # -S and -B -G ${CMAKE_GENERATOR} is automatically filled. it is possilbe to specify other options from here.
-        CMAKE_BUILD_OPTION -j ${number_thread}
-        CMAKE_INSTALL_OPTION --prefix ${CMAKE_BINARY_DIR}/test
-        DESTINATION "${__dest}"
-        #FORCE_UPDATE
+        CMAKE_BUILD_OPTION -j ${number_thread} # cmake --build [auto] [CMAKE_BUILD_OPTION] 
+        CMAKE_INSTALL_OPTION --prefix ${CMAKE_BINARY_DIR}/test # cmake --install [auto] [CMAKE_INSTALL_OPTION] 
+        DESTINATION "${__dest}" # the directory this module uses. the default is ${CMAKE_BINARY_DIR}/CMakeFetchKautilModule 
+        NON_VERSIONING #add destination the suffix of "non_versioning/[repository_name]/[short_hash]"   
+        #FORCE_UPDATE force to clone and build
+        #FORCE_BUILD  force to build
         #VERBOSE
         )
 
