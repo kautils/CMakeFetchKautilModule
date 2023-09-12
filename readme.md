@@ -49,10 +49,7 @@ CMakeFetchKautilModule(name
 # this can be used when want to update entire repos or when repair unexpectedly erased binaries. 
 set(CMakeFetchKautilModule.force FALSE) 
 
-# used as working directory. as default, clone ,build,install into here.     
 set(__dest ${CMAKE_BINARY_DIR}/dest)
-
-# the number of thread 
 set(number_thread 2)
 CMakeFetchKautilModule(c11_string_allocator
         GIT https://github.com/kautils/c11_string_allocator.git 
