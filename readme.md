@@ -12,6 +12,37 @@
 * argument1.CLONE_PREFIX : last cloned dir
 * argument1.INSTALL_PREFIX : last installed dir
 
+### usage 
+* name c11_string_allocator
+* GIT some_uri.git
+* REMOTE origin  
+* BRANCH | TAG | HASH : must specify one of BRANCH,TAG or HASH   
+* CMAKE_CONFIGURE  : cmake -S [auto] -B [auto] [CMAKE_CONFIGURE] [CMAKE_CONFIGURE_MACRO]  
+* CMAKE_CONFIGURE_MACRO : -S and -B -G ${CMAKE_GENERATOR} is automatically filled. it is possilbe to specify other options from here.
+* CMAKE_BUILD_OPTION : cmake --build [auto] [CMAKE_BUILD_OPTION] 
+* CMAKE_INSTALL_OPTION : cmake --install [auto] [CMAKE_INSTALL_OPTION] 
+* DESTINATION : the directory this module uses. the default is ${CMAKE_BINARY_DIR}/CMakeFetchKautilModule 
+* NON_VERSIONING : add destination the suffix of "non_versioning/[repository_name]/[short_hash]"   
+* FORCE_UPDATE : force to clone and build
+* FORCE_BUILD  : force to build
+* VERBOSE
+
+```cmake
+CMakeFetchKautilModule(name
+        GIT
+        REMOTE 
+        BRANCH | TAG | HASH
+        [CMAKE_CONFIGURE]
+        [CMAKE_CONFIGURE_MACRO]
+        [DESTINATION]
+        [NON_VERSIONING]
+        [FORCE_UPDATE]
+        [FORCE_BUILD]
+        [VERBOSE]
+        )
+```
+
+
 ### example
 ```cmake
 # force to refetch all the repo within this configure.
@@ -23,21 +54,6 @@ set(__dest ${CMAKE_BINARY_DIR}/dest)
 
 # the number of thread 
 set(number_thread 2)
-CMakeFetchKautilModule(c11_string_allocator
-        GIT https://github.com/kautils/c11_string_allocator.git 
-        REMOTE origin 
-        TAG v0.0.1
-        #CMAKE_CONFIGURE  # cmake -S [auto] -B [auto] [CMAKE_CONFIGURE] [CMAKE_CONFIGURE_MACRO]  
-        CMAKE_CONFIGURE_MACRO -DSOME="SOME" # -S and -B -G ${CMAKE_GENERATOR} is automatically filled. it is possilbe to specify other options from here.
-        CMAKE_BUILD_OPTION -j ${number_thread} # cmake --build [auto] [CMAKE_BUILD_OPTION] 
-        CMAKE_INSTALL_OPTION --prefix ${CMAKE_BINARY_DIR}/test # cmake --install [auto] [CMAKE_INSTALL_OPTION] 
-        DESTINATION "${__dest}" # the directory this module uses. the default is ${CMAKE_BINARY_DIR}/CMakeFetchKautilModule 
-        NON_VERSIONING #add destination the suffix of "non_versioning/[repository_name]/[short_hash]"   
-        #FORCE_UPDATE force to clone and build
-        #FORCE_BUILD  force to build
-        #VERBOSE
-        )
-
 CMakeFetchKautilModule(c11_string_allocator
         GIT https://github.com/kautils/c11_string_allocator.git 
         REMOTE origin 
