@@ -10,10 +10,11 @@ macro(CMakeFetchKautilModule prfx)
     set(CMakeFetchKautilModule_evacu_m ${m})
     set(m CMakeFetchKautilModule)
     
-    cmake_parse_arguments(${prfx} "VERBOSE;FORCE_UPDATE;FORCE_BUILD" "GIT;REMOTE;BRANCH;TAG;HASH;DESTINATION" "CMAKE_CONFIGURE_MACRO;CMAKE_CONFIGURE_OPTION;CMAKE_BUILD_OPTION;CMAKE_INSTALL_OPTION" ${ARGV})
-    list(APPEND ${m}_unsetter_prfx ${prfx}_DESTINATION ${prfx}_FORCE_UPDATE ${prfx}_GIT ${prfx}_REMOTE ${prfx}_TAG ${prfx}_CMAKE_CONFIGURE_OPTION ${prfx}_CMAKE_BUILD_OPTION ${prfx}_CMAKE_INSTALL_OPTION)
-    list(APPEND ${m}_unsetter ${m}_uri ${m}_remote ${m}_tag)
+    cmake_parse_arguments(${prfx} "VERBOSE;FORCE_UPDATE;FORCE_BUILD;NON_VERSIONING" "GIT;REMOTE;BRANCH;TAG;HASH;DESTINATION" "CMAKE_CONFIGURE_MACRO;CMAKE_CONFIGURE_OPTION;CMAKE_BUILD_OPTION;CMAKE_INSTALL_OPTION" ${ARGV})
+    list(APPEND ${m}_unsetter_prfx ${prfx}_NON_VERSIONING ${prfx}_DESTINATION  ${prfx}_FORCE_UPDATE ${prfx}_GIT ${prfx}_REMOTE ${prfx}_TAG ${prfx}_CMAKE_CONFIGURE_OPTION ${prfx}_CMAKE_BUILD_OPTION ${prfx}_CMAKE_INSTALL_OPTION)
+    list(APPEND ${m}_unsetter ${m}_uri ${m}_remote ${m}_tag ${m}_uri_name)
     set(${m}_uri ${${prfx}_GIT})
+    get_filename_component(${m}_uri_name "${${m}_uri}" NAME )
     set(${m}_remote ${${prfx}_REMOTE})
     set(${m}_branch ${${prfx}_BRANCH})
     set(${m}_tag ${${prfx}_TAG})
@@ -25,7 +26,7 @@ macro(CMakeFetchKautilModule prfx)
     set(${m}_cmake_build ${${prfx}_CMAKE_BUILD_OPTION})
     set(${m}_cmake_install ${${prfx}_CMAKE_INSTALL_OPTION})
     
-    list(APPEND ${m}_unsetter  ${m}_force_option ${m}_verbose_option ${m}_dest ${m}_force_build)
+    list(APPEND ${m}_unsetter  ${m}_force_option ${m}_verbose_option ${m}_force_build)
     if(${${prfx}_FORCE_UPDATE} 
             OR (DEFINED CMakeFetchKautilModule.force AND ${CMakeFetchKautilModule.force})) 
         set(${m}_force_option FORCE_UPDATE )
@@ -42,14 +43,27 @@ macro(CMakeFetchKautilModule prfx)
         endforeach()
     endif()
     
-    
+    list(APPEND ${m}_unsetter ${m}_dest ${m}_non_ver)
+    set(${m}_non_ver ${${prfx}_NON_VERSIONING})
     set(${m}_dest ${${prfx}_DESTINATION})
     if("${${m}_dest}" STREQUAL "")
-        set(${m}_dest ${CMAKE_BINARY_DIR}/CMakeFetchKautilModule)
+        if(${${m}_non_ver})
+            if(DEFINED ${m}_branch)
+                set(${m}_dest "${CMAKE_BINARY_DIR}/CMakeFetchKautilModule/non_versioning/${${m}_uri_name}/${${m}_branch}")
+            elseif(DEFINED ${m}_tag)
+                set(${m}_dest "${CMAKE_BINARY_DIR}/CMakeFetchKautilModule/non_versioning/${${m}_uri_name}/${${m}_tag}")
+            elseif(DEFINED ${m}_hash)
+                string(SUBSTRING "${${m}_hash}" 0 7 ${m}_buf_short_hash)
+                set(${m}_dest "${CMAKE_BINARY_DIR}/CMakeFetchKautilModule/non_versioning/${${m}_uri_name}/${${m}_buf_short_hash}")
+                unset(${m}_buf_short_hash)
+            else()
+                message(FATAL_ERROR "any of BRANCH,TAG and HASH is not specified.")
+            endif()
+        else()
+            set(${m}_dest ${CMAKE_BINARY_DIR}/CMakeFetchKautilModule)
+        endif()
         file(MAKE_DIRECTORY ${${m}_dest})
     endif()
-    
-    
     
     list(APPEND ${m}_unsetter ${m}_kautil_cmake_module_dir)
     if(NOT DEFINED KAUTIL_THIRD_PARTY_DIR)
@@ -115,11 +129,8 @@ macro(CMakeFetchKautilModule prfx)
             string(APPEND __build_id ${CMAKE_CXX_COMPILER_ID}${__mingw_id}-${CMAKE_GENERATOR}-${__compiler_hash})
             string(TOLOWER ${__build_id} __build_id)
             
-            
-            set(${m}_build_root ${${m}_dest}.build/${${m}_1}/${${m}_0}/${__build_id}) # as build cache
+            set(${m}_build_root ${${m}_dest}/build/${${m}_1}/${${m}_0}/${__build_id}) # as build cache
             file(MAKE_DIRECTORY ${${m}_build_root}) 
-            
-            
             
             list(APPEND ${m}_unsetter __str_work_dir __str_build_dir __str_generator) 
             # for white space
