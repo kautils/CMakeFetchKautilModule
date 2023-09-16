@@ -170,9 +170,17 @@ macro(CMakeFetchKautilModule prfx)
             set(${prfx}.CLONE_PREFIX "${${prfx}}" CACHE STRING "last cloned dir" FORCE)
             set(${prfx}.INSTALL_PREFIX "${${m}_dest}" CACHE STRING "last installed dir" FORCE)
             
+            if(EXISTS "${kautil_jvm_info.INSTALL_PREFIX}/lib/cmake")
+                list(APPEND CMAKE_PREFIX_PATH "${kautil_jvm_info.INSTALL_PREFIX}/lib/cmake")
+                list(REMOVE_DUPLICATES CMAKE_PREFIX_PATH)
+            endif()
         endif()
     endif()
-
+    
+    
+    
+    
+    
     foreach(__var ${${m}_unsetter})
         unset(${__var})
     endforeach()
