@@ -92,11 +92,12 @@ macro(CMakeFetchKautilModule prfx)
             )
     
     
-    list(APPEND ${m}_unsetter __build_cache_var ${m}_build_struct_id)
+    list(APPEND ${m}_unsetter __build_cache_var )
     set(__build_cache_var ${${prfx}}/${${m}_branch}${${m}_tag}${${m}_hash})
     
     # key to struct which has the info of a build such as BUILD_DIR, CLONE_PREFIX, INSTALL_PREFIX. 
     # for example, ${${prfx}.STRUCT_ID}.BUILD_DIR is path to build dir   
+    string(MD5 __build_cache_var ${__build_cache_var}) 
     string(MD5 ${prfx}.STRUCT_ID ${__build_cache_var}) 
     
     if("${${m}_force_option}" STREQUAL "")
