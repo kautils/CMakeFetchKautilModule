@@ -79,8 +79,6 @@ macro(CMakeFetchKautilModule prfx)
         file(MAKE_DIRECTORY ${${m}_dest})
     endif()
     
-    list(APPEND ${m}_unsetter ${m}_kautil_cmake_module_dir)
-    set(${m}_kautil_cmake_module_dir "${${m}_third_party_root}/kautil_cmake")
     git_clone(https://raw.githubusercontent.com/kautils/CMakeGitCloneMinimal/v0.0.1/CMakeGitCloneMinimal.cmake)
     
     CMakeGitCloneMinimal( ${prfx} 
