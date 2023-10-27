@@ -1,3 +1,8 @@
+if(NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeKautilHeader.v0.0.cmake)
+    file(DOWNLOAD https://raw.githubusercontent.com/kautils/CMakeKautilHeader/v0.0/CMakeKautilHeader.cmake ${CMAKE_BINARY_DIR}/CMakeKautilHeader.v0.0.cmake)
+endif()
+include(${CMAKE_BINARY_DIR}/CMakeKautilHeader.cmake)
+
 ### static
 
 # force to refetch all the repo within this configure
@@ -69,13 +74,7 @@ macro(CMakeFetchKautilModule prfx)
         file(MAKE_DIRECTORY ${${m}_dest})
     endif()
     
-    list(APPEND ${m}_unsetter ${m}_kautil_cmake_module_dir)
-    set(${m}_kautil_cmake_module_dir "${${m}_third_party_root}/kautil_cmake")
-    if(NOT EXISTS "${${m}_kautil_cmake_module_dir}/CMakeGitCloneMinimal.cmake")
-        file(DOWNLOAD https://raw.githubusercontent.com/kautils/CMakeGitCloneMinimal/v0.0.1/CMakeGitCloneMinimal.cmake "${${m}_kautil_cmake_module_dir}/CMakeGitCloneMinimal.cmake")
-    endif()
-    include("${${m}_kautil_cmake_module_dir}/CMakeGitCloneMinimal.cmake")
-    
+    git_clone(https://raw.githubusercontent.com/kautils/CMakeGitCloneMinimal/v0.0.1/CMakeGitCloneMinimal.cmake)
     
     
     CMakeGitCloneMinimal( ${prfx} 
