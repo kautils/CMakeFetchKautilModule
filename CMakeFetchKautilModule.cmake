@@ -10,7 +10,6 @@ endif()
 
 
 
-
 ### static
 
 # force to refetch all the repo within this configure
@@ -19,6 +18,8 @@ set(CMakeFetchKautilModule.force FALSE)
 
 macro(CMakeFetchKautilModule prfx)
     
+    
+
     
     
     set(CMakeFetchKautilModule_evacu_m ${m})
@@ -86,7 +87,7 @@ macro(CMakeFetchKautilModule prfx)
         file(MAKE_DIRECTORY ${${m}_dest})
     endif()
     
-    git_clone(https://raw.githubusercontent.com/kautils/CMakeGitCloneMinimal/v0.0.1/CMakeGitCloneMinimal.cmake)
+    git_clone(https://raw.githubusercontent.com/kautils/CMakeGitCloneMinimal/v0.0/CMakeGitCloneMinimal.cmake)
     
     CMakeGitCloneMinimal( ${prfx} 
             REPOSITORY_REMOTE ${${m}_remote}  
