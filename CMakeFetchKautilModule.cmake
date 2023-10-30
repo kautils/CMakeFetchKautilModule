@@ -23,13 +23,14 @@ macro(CMakeFetchKautilModule prfx)
     
     cmake_parse_arguments(${prfx} "VERBOSE;FORCE_UPDATE;FORCE_BUILD;NON_VERSIONING" "GIT;REMOTE;BRANCH;TAG;HASH;DESTINATION" "CMAKE_CONFIGURE_MACRO;CMAKE_CONFIGURE_OPTION;CMAKE_BUILD_OPTION;CMAKE_INSTALL_OPTION" ${ARGV})
     list(APPEND ${m}_unsetter_prfx ${prfx}_FORCE_BUILD ${prfx}_KEYWORDS_MISSING_VALUES ${prfx}_NON_VERSIONING ${prfx}_DESTINATION  ${prfx}_FORCE_UPDATE ${prfx}_GIT ${prfx}_REMOTE ${prfx}_TAG ${prfx}_CMAKE_CONFIGURE_OPTION ${prfx}_CMAKE_BUILD_OPTION ${prfx}_CMAKE_INSTALL_OPTION)
-    list(APPEND ${m}_unsetter ${m}_uri ${m}_remote ${m}_tag ${m}_uri_name)
+    list(APPEND ${m}_unsetter ${m}_uri ${m}_remote ${m}_tag ${m}_uri_name ${m}_kautil_prj_suffix)
     set(${m}_uri ${${prfx}_GIT})
     get_filename_component(${m}_uri_name "${${m}_uri}" NAME )
     set(${m}_remote ${${prfx}_REMOTE})
     set(${m}_branch ${${prfx}_BRANCH})
     set(${m}_tag ${${prfx}_TAG})
     set(${m}_hash ${${prfx}_HASH})
+    string(APPEND ${m}_kautil_prj_suffix ${${m}_hash} ${${m}_tag} ${${m}_branch})
     
     list(APPEND ${m}_unsetter ${m}_cmake_macro ${m}_cmake_configure ${m}_cmake_build ${m}_cmake_install)
     set(${m}_cmake_configure ${${prfx}_CMAKE_CONFIGURE_OPTION})
@@ -42,10 +43,7 @@ macro(CMakeFetchKautilModule prfx)
             OR (DEFINED CMakeFetchKautilModule.force AND ${CMakeFetchKautilModule.force})) 
         set(${m}_force_option FORCE_UPDATE )
     endif()
-    
     set(${m}_force_build ${${prfx}_FORCE_BUILD})
-    
-    
     
     
     if(${${prfx}_VERBOSE})
@@ -95,7 +93,6 @@ macro(CMakeFetchKautilModule prfx)
             ${${m}_force_option}
             ${${m}_verbose_option}
             )
-    
     
     
     # key to struct which has the info of a build such as BUILD_DIR, CLONE_PREFIX, INSTALL_PREFIX. 
@@ -162,6 +159,7 @@ macro(CMakeFetchKautilModule prfx)
             else()
                 CMakeExecuteCommand(execgit ASSERT ${${m}_verbose_option} DIR "${${m}_str_work_dir}" COMMAND cmake -S . -B "${${m}_str_build_dir}" -G "${${m}_str_generator}"
                         -DKAUTIL_THIRD_PARTY_DIR='${KAUTIL_THIRD_PARTY_DIR}'
+                        -DKAUTIL_PROJECT_SUFFIX='${${m}_kautil_prj_suffix}'
                         -DCMAKE_CXX_COMPILER='${CMAKE_CXX_COMPILER}'
                         -DCMAKE_C_COMPILER='${CMAKE_C_COMPILER}'
                         -DCMAKE_CXX_COMPILER_LAUNCHER='${CMAKE_CXX_COMPILER_LAUNCHER}'
