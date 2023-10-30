@@ -9,9 +9,7 @@ else()
 endif()
 
 
-
 ### static
-
 # force to refetch all the repo within this configure
 # this can be used want to update entire repos or erase binaries unexpectedly 
 set(CMakeFetchKautilModule.force FALSE) 
@@ -21,16 +19,20 @@ macro(CMakeFetchKautilModule prfx)
     set(CMakeFetchKautilModule_evacu_m ${m})
     set(m CMakeFetchKautilModule)
     
-    cmake_parse_arguments(${prfx} "VERBOSE;FORCE_UPDATE;FORCE_BUILD;NON_VERSIONING" "GIT;REMOTE;BRANCH;TAG;HASH;DESTINATION" "CMAKE_CONFIGURE_MACRO;CMAKE_CONFIGURE_OPTION;CMAKE_BUILD_OPTION;CMAKE_INSTALL_OPTION" ${ARGV})
+    cmake_parse_arguments(${prfx} "VERBOSE;FORCE_UPDATE;FORCE_BUILD;NON_VERSIONING" "GIT;REMOTE;BRANCH;TAG;HASH;DESTINATION;PROJECT_SUFFIX" "CMAKE_CONFIGURE_MACRO;CMAKE_CONFIGURE_OPTION;CMAKE_BUILD_OPTION;CMAKE_INSTALL_OPTION" ${ARGV})
     list(APPEND ${m}_unsetter_prfx ${prfx}_FORCE_BUILD ${prfx}_KEYWORDS_MISSING_VALUES ${prfx}_NON_VERSIONING ${prfx}_DESTINATION  ${prfx}_FORCE_UPDATE ${prfx}_GIT ${prfx}_REMOTE ${prfx}_TAG ${prfx}_CMAKE_CONFIGURE_OPTION ${prfx}_CMAKE_BUILD_OPTION ${prfx}_CMAKE_INSTALL_OPTION)
-    list(APPEND ${m}_unsetter ${m}_uri ${m}_remote ${m}_tag ${m}_uri_name ${m}_kautil_prj_suffix)
+    list(APPEND ${m}_unsetter ${m}_uri ${m}_remote ${m}_tag ${m}_uri_name ${m}_kautil_prj_suffix ${m}_len)
     set(${m}_uri ${${prfx}_GIT})
     get_filename_component(${m}_uri_name "${${m}_uri}" NAME )
     set(${m}_remote ${${prfx}_REMOTE})
     set(${m}_branch ${${prfx}_BRANCH})
     set(${m}_tag ${${prfx}_TAG})
     set(${m}_hash ${${prfx}_HASH})
-    string(APPEND ${m}_kautil_prj_suffix ${${m}_hash} ${${m}_tag} ${${m}_branch})
+    
+    
+    if(DEFINED ${prfx}_PROJECT_SUFFIX)
+        string(APPEND ${m}_kautil_prj_suffix "${${prfx}_PROJECT_SUFFIX}")
+    endif()
     
     list(APPEND ${m}_unsetter ${m}_cmake_macro ${m}_cmake_configure ${m}_cmake_build ${m}_cmake_install)
     set(${m}_cmake_configure ${${prfx}_CMAKE_CONFIGURE_OPTION})
@@ -81,8 +83,8 @@ macro(CMakeFetchKautilModule prfx)
         file(MAKE_DIRECTORY ${${m}_dest})
     endif()
     
-    git_clone(https://raw.githubusercontent.com/kautils/CMakeGitCloneMinimal/v0.0/CMakeGitCloneMinimal.cmake)
     
+    git_clone(https://raw.githubusercontent.com/kautils/CMakeGitCloneMinimal/v0.0/CMakeGitCloneMinimal.cmake)
     CMakeGitCloneMinimal( ${prfx} 
             REPOSITORY_REMOTE ${${m}_remote}  
             REPOSITORY_URI ${${m}_uri}
