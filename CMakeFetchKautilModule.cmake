@@ -19,7 +19,7 @@ macro(CMakeFetchKautilModule prfx)
     set(CMakeFetchKautilModule_evacu_m ${m})
     set(m CMakeFetchKautilModule)
     
-    cmake_parse_arguments(${prfx} "VERBOSE;FORCE_UPDATE;FORCE_BUILD;NON_VERSIONING" "GIT;REMOTE;BRANCH;TAG;HASH;DESTINATION;PROJECT_SUFFIX" "CMAKE_CONFIGURE_MACRO;CMAKE_CONFIGURE_OPTION;CMAKE_BUILD_OPTION;CMAKE_INSTALL_OPTION" ${ARGV})
+    cmake_parse_arguments(${prfx} "VERBOSE;FORCE_UPDATE;FORCE_BUILD;NON_VERSIONING" "GIT;REMOTE;BRANCH;TAG;HASH;DESTINATION;PROJECT_SUFFIX;PROJECT_RENAME" "CMAKE_CONFIGURE_MACRO;CMAKE_CONFIGURE_OPTION;CMAKE_BUILD_OPTION;CMAKE_INSTALL_OPTION" ${ARGV})
     list(APPEND ${m}_unsetter_prfx ${prfx}_FORCE_BUILD ${prfx}_KEYWORDS_MISSING_VALUES ${prfx}_NON_VERSIONING ${prfx}_DESTINATION  ${prfx}_FORCE_UPDATE ${prfx}_GIT ${prfx}_REMOTE ${prfx}_TAG ${prfx}_CMAKE_CONFIGURE_OPTION ${prfx}_CMAKE_BUILD_OPTION ${prfx}_CMAKE_INSTALL_OPTION)
     list(APPEND ${m}_unsetter ${m}_uri ${m}_remote ${m}_tag ${m}_uri_name ${m}_kautil_prj_suffix ${m}_len)
     set(${m}_uri ${${prfx}_GIT})
@@ -29,9 +29,13 @@ macro(CMakeFetchKautilModule prfx)
     set(${m}_tag ${${prfx}_TAG})
     set(${m}_hash ${${prfx}_HASH})
     
-    
+    list(APPEND ${m}_unsetter ${m}_kautil_prj_suffix ${m}_kautil_prj_rename)
     if(DEFINED ${prfx}_PROJECT_SUFFIX)
         string(APPEND ${m}_kautil_prj_suffix "${${prfx}_PROJECT_SUFFIX}")
+    endif()
+    
+    if(DEFINED ${prfx}_PROJECT_RENAME)
+        string(APPEND ${m}_kautil_prj_rename "${${prfx}_PROJECT_RENAME}")
     endif()
     
     list(APPEND ${m}_unsetter ${m}_cmake_macro ${m}_cmake_configure ${m}_cmake_build ${m}_cmake_install)
@@ -159,9 +163,12 @@ macro(CMakeFetchKautilModule prfx)
             if(DEFINED ${m}_cmake_configure)
                 CMakeExecuteCommand(execgit ASSERT ${${m}_verbose_option} DIR "${${m}_build_root}" COMMAND cmake -S . -B "${${m}_str_build_dir}" ${${m}_cmake_configure} ${${m}_cmake_macro})  
             else()
+                
+                
                 CMakeExecuteCommand(execgit ASSERT ${${m}_verbose_option} DIR "${${m}_str_work_dir}" COMMAND cmake -S . -B "${${m}_str_build_dir}" -G "${${m}_str_generator}"
                         -DKAUTIL_THIRD_PARTY_DIR='${KAUTIL_THIRD_PARTY_DIR}'
                         -DKAUTIL_PROJECT_SUFFIX='${${m}_kautil_prj_suffix}'
+                        -DKAUTIL_PROJECT_RENAME='${${m}_kautil_prj_rename}'
                         -DCMAKE_CXX_COMPILER='${CMAKE_CXX_COMPILER}'
                         -DCMAKE_C_COMPILER='${CMAKE_C_COMPILER}'
                         -DCMAKE_CXX_COMPILER_LAUNCHER='${CMAKE_CXX_COMPILER_LAUNCHER}'
