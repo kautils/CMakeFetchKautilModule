@@ -64,4 +64,32 @@ CMakeFetchKautilModule(split_view_iterator
         BRANCH master
         CMAKE_BUILD_OPTION -j ${number_thread}
         )
+
+
+# assume kautil_some_module generate target "kautil::some_module::version::static"
+CMakeFetchKautilModule(
+    kautil_some_module # expected to support KAUTIL_PROJECT_SUFFIX    
+    GIT "C:/Users/ka/Downloads/test.org" 
+    REMOTE origin 
+    HASH ${${m}_commit_hash}
+    PROJECT_SUFFIX some_suffix
+
+    )
+# if use PROJECT_SUFFIX then "kautil::some_module::version::static" become kautil::some_module::[PROJECT_SUFFIX]::static
+# whcih will be found with find_package(KautilSomeModule.[PROJECT_SUFFIX].static)
+
+set(${m}_commit_hash some_commit_hash)
+CMakeFetchKautilModule(
+    kautil_some_module # expected to support KAUTIL_PROJECT_SUFFIX    
+    GIT "C:/Users/ka/Downloads/test.org" 
+    REMOTE origin 
+    HASH ${${m}_commit_hash}
+    PROJECT_RENAME ${${m}_commit_hash}
+    )
+
+# if use PROJECT_SUFFIX then "kautil::some_module::version::static" become [PROJECT_SUFFIX]
+# whcih will be found with find_package([PROJECT_RENAME])
+
+
+
 ```
